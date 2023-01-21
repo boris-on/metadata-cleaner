@@ -20,6 +20,7 @@ jobs:
             
             docker kill metawipe_container
             docker container prune
+            y
 
             git pull
             
