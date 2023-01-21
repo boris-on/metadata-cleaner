@@ -19,7 +19,8 @@ jobs:
             cd metawipe
             
             docker kill metawipe_container
-            
+            docker container prune
+
             git pull
             
             docker build -t metawipe . 
