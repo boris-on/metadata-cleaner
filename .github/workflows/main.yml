@@ -18,9 +18,9 @@ jobs:
           command: |
             cd metawipe
             
-            docker kill metawipe
+            docker kill metawipe_container
             
             git pull
             
-            docker build -t metawipe .
-            docker run -dp 80:80 metawipe
+            docker build -t metawipe . 
+            docker run -dp 80:80 --name metawipe_container metawipe 
