@@ -14,10 +14,7 @@
     <link rel="stylesheet" href="css/app.css">
 
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-    <meta name="google-site-verification" content="G9MZwlSkVLAUWbMO0zzT_DQlXQNbbST777BV0px7lAY">
-
-    <link rel="canonical" href="https://ssyoutube.com/ru31/youtube-video-downloader">
-    
+    <meta name="google-site-verification" content="G9MZwlSkVLAUWbMO0zzT_DQlXQNbbST777BV0px7lAY">    
     
     <meta name="propeller" content="1de3f0acc7b00d2ebca69b8929f3d3c5">
     </head>
@@ -26,7 +23,7 @@
 <header>
     <nav class="topnav navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="https://ssyoutube.com/ru21/">
+            <a class="navbar-brand" href="https://metawipe.ru">
                 <img loading="lazy" src="fonts/logo.svg" alt>
 
                 metawipe
@@ -34,7 +31,14 @@
         </div>
     </nav>
 </header>
-
+<script
+  src="https://code.jquery.com/jquery-3.6.3.js"
+  integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+  crossorigin="anonymous">
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js" type="text/javascript"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.2/jquery.validate.js" type="text/javascript"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" type="text/javascript"></script> -->
 <main>
 <section id="main" class="jumbotron mb-0 pb-3 bg-primary">
     <div class="search-block-default-height">
@@ -45,25 +49,77 @@
                     <div class="col-12 col-md-10 col-lg-6">
                         <form
                         enctype="multipart/form-data"
-                        action="http://localhost:8000/upload"
+                        action="https://metawipe.ru/upload"
                         method="post"
                         >
-                        <input type="file" name="myFile" multiple="multiple"/>
-                        <input type="submit" value="upload" />
+                        <input type="file" name="myFile" id="myFile" multiple="multiple"/>
+                        <input type="submit" name="submit" value="Отправить" />
                       </form>
                     </div>
                 </div>
             </div>
         </div>
-        
     </div>
+    <a id="dow"></a>
 </section>
+<script>
+    $(function(){
+        function sendData($form){
+            var form_data = new FormData();
+
+            var totalfiles = document.getElementById('myFile').files.length;
+            for (var index = 0; index < totalfiles; index++) {
+                form_data.append("files[]", document.getElementById('myFile').files[index]);
+            }
+
+            return $.ajax({
+                url: $form.attr('action'),
+                type:'POST',
+                data: form_data,  
+                processData: false,
+                contentType: false,
+                xhrFields:{
+                    responseType: 'blob'
+                },
+                success: function(data){
+                    var anchor = document.getElementById('dow');
+                    var url = window.URL || window.webkitURL;
+                    anchor.href = url.createObjectURL(data);
+                    anchor.download = 'metawipe.zip';
+                    anchor.click();
+                },
+                error:function(){
+                    console.log(error)
+                }
+            });
+
+        }
+
+        $('form').validate();
+
+        $('form').on('submit', function(e){
+            e.preventDefault();
+            
+            sendData($(this))
+            .done(function(){
+                $('form').html('<div id="message"></div>');
+
+                $('#message')
+                    .html('<h2>Файлы отправлены</h2>')
+                    .append('<p>Метаданные сейчас будут удалены</p>')
+                    .hide()
+                    .fadeIn(1500);
+            });
+        })
+
+    })
+</script>
 <section class="container mt-5 mb-5 align-items-center b-instruction how-to-mp4">
     <div class="row">  
     <div class="col-md-12 col-lg-12">
         <div class="media">
             <div class="media-body">
-                                <p class="text-muted">Являясь третьим по популярности веб-сайтом в мире, YouTube предлагает своим пользователям отличные впечатления от просмотра. Чего он не может предоставить, так это загрузки видео с Ютуба. Вот почему ssyoutube здесь, чтобы помочь вам!</p>
+                 <p class="text-muted">Бывают ситуации, когда необходимо мнгновенно очистить метаданные нескольких файлов. Существующие сервисы не предоставляют возможность очистки нескольких файлов одновременно. Они требуют ввода каждого файла по отдельности.</p>
             </div>
         </div>
     </div>
@@ -87,162 +143,30 @@
     <div class="col-md-12 col-lg-12">
         <div class="media">
             <div class="media-body">
-                                <p class="text-muted text-left">С нашим загрузчиком видео с YouTube вы можете выбирать видео и скачивать их бесплатно! Вы можете получить высококачественное видео в формате MP4, MP3, SQ, HD, Full HD и других форматах. Наше программное обеспечение работает как на ПК, так и на мобильных устройствах, что позволяет вам использовать его где угодно!</p>
-         <p class="text-muted text-left">Скачать видео с Ютуба еще никогда не было так просто! Не тратьте свое время. Просто установите наше программное обеспечение на свои устройства и наслаждайтесь бесплатным контентом!</p>
+         <p class="text-muted text-left">Наш сервис не тратит время своих пользователей. Просто перетащите нужные файлы, а дальше мы все сделаем сами. На данный момент сайт поддерживает очистку .docx-файлов.</p>
+         <p class="text-muted text-left">Вам остается лишь распаковать архив с помощью любого из существующих для этого инструментов, таких как WinRAR, 7-Zip и других.<div class=""></div></p>
             </div>
         </div>
     </div>
 </div>
 </main>
 <footer class="bg-black pb-5 pt-4 mt-auto">
-    <div class="row justify-content-center text-center mb-3">
+    <div class="desktop-footer row justify-content-center text-center mb-3">
         <div class="col-md-12">
-            <span class="d-block mt-3 text-gray">© 2023 YouTube Downloader,
-                сделано с
-                <i class="fas fa-heart text-danger"></i> by SSYoutube.
+            <span class="d-block mt-3 text-gray">© 2023 Metawipe
             </span>
-        </div>
-    </div>
-    <div class="desktop-footer d-none d-md-flex container">
-        <div class="row justify-content-center w-100 color-white">
-            <div class="col-auto">
-                <p class="col-header-name">
-                                            Загрузчик видео из Ютуб
-                                    </p>
-            </div>
-            <div class="col-auto">
-                <p class="col-header-name">
-                                            <a href="https://ssyoutube.com/ru7/download-from-tiktok" lang="ru">Загрузчик видео с Тик Тока</a>
-                                    </p>
-                <ul>
-                    <li>
-
-                                                    <a href="https://ssyoutube.com/ru5/download-from-instagram" lang="ru">Загрузчик видео из Инстаграма</a>
-
-                                            </li>
-                    <li>
-                                                    <a href="https://ssyoutube.com/ru6/how-to-download-facebook-video" lang="ru">Загрузчик видео из Фейсбука</a>
-                                            </li>
-                    <li>
-                                                    <a href="https://ssyoutube.com/ru7/download-from-twitter" lang="ru">Загрузчик видео из Твиттера</a>
-                                            </li>
-                </ul>
-            </div>
-            <div class="col-auto">
-                <p class="col-header-name">
-                                            <a href="/about" lang="ru">О нас</a></p>
-                                <ul>
-                    <li>
-                                                    <a href="/en1/privacy-policy" lang="ru">Политика конфиденциальности</a>
-                                            </li>
-                    <li>
-                                                    <a href="/terms-of-service" lang="ru">Условия обслуживания</a>
-                                            </li>
-                    <li>
-                                                    <a href="/en1/contact" lang="ru">Контакты</a>
-                                            </li>
-                    <li>
-                                                    <a href="/api-faq" lang="ru">API</a>
-                                            </li>
-                </ul>
-            </div>
-            <div class="col-auto">
-                <p class="col-header-name">
-                    Partners
-                </p>
-                <ul>
-                    <li>
-                        <a href="https://savefrom.net/" target="_blank" lang="ru">SaveFrom</a>
-                    </li>
-                    <li>
-                        <a href="https://background-remover.com/" target="_blank" lang="ru">Background Remover</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="mobile-footer d-md-none container">
-        <div class="accordion" id="accordion-footer">
-                                        <div class="card">
-                    <div class="card-header">
-                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#footerTwo" aria-expanded="false" aria-controls="footerTwo">
-                            <a href="https://ssyoutube.com/ru6/how-to-download-facebook-video" lang="ru">Загрузчик видео из Фейсбука</a>
-                        </button>
-                    </div>
-                </div>
-                                        <div class="card">
-                    <div class="card-header">
-                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#footerThree" aria-expanded="false" aria-controls="footerThree">
-                            <a href="https://ssyoutube.com/ru5/download-from-instagram" lang="ru">Загрузчик видео из Инстаграма</a>
-                        </button>
-                    </div>
-                </div>
-                                        <div class="card">
-                    <div class="card-header">
-                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#footerFive" aria-expanded="false" aria-controls="footerFive">
-                            <a href="https://ssyoutube.com/ru7/download-from-tiktok" lang="ru">Загрузчик видео с Тик Тока</a>
-                        </button>
-                    </div>
-
-                </div>
-                                        <div class="card">
-                    <div class="card-header">
-                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#footerSix" aria-expanded="false" aria-controls="footerSix">
-                            <a href="https://ssyoutube.com/ru7/download-from-twitter" lang="ru">Загрузчик видео из Твиттера</a>
-                        </button>
-                    </div>
-                </div>
-                        <div class="card">
-                <div class="card-header">
-                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#footerSeven" aria-expanded="false" aria-controls="footerSeven">
-                                                    <a href="/about" lang="ru">О нас</a>
-                                            </button>
-                </div>
-                <div id="footerSeven" class="collapse" aria-labelledby="footerSeven" data-parent="#accordion-footer">
-                    <div class="card-body">
-                        <ul>
-                                                            <li>
-                                    <a href="/en1/privacy-policy" lang="ru">Политика конфиденциальности</a>
-                                </li>
-                                                                                        <li>
-                                    <a href="/terms-of-service" lang="ru">Условия обслуживания</a>
-                                </li>
-                                                                                        <li>
-                                    <a href="/en1/contact" lang="ru">Контакты</a>
-                                </li>
-                                                    </ul>
-                    </div>
-                </div>
-            </div>
-                            <div class="card">
-                    <div class="card-header">
-                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#footerEight" aria-expanded="false" aria-controls="footerEight">
-                            <a href="/api-faq" lang="ru">API</a>
-                        </button>
-                    </div>
-                </div>
-                        <div class="card">
-                <div class="card-header">
-                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#footerTen" aria-expanded="false" aria-controls="footerTen" style="color:#20c997">
-                        Partners
-                    </button>
-                </div>
-                <div id="footerTen" class="collapse" aria-labelledby="footerTen" data-parent="#accordion-footer">
-                    <div class="card-body">
-                        <ul>
-                            <li>
-                                <a href="https://savefrom.net/" target="_blank" lang="ru">SaveFrom</a>
-                            </li>
-                            <li>
-                                <a href="https://background-remover.com/" target="_blank" lang="ru">Background Remover</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            <ul>
+                <li>
+                    <br>
+                </li>
+                <li>
+                    <a href="https://rutubeto.ru/" target="_blank" lang="ru">Rutebeto</a>
+                </li>
+                <li>
+                    <a href="https://github.com/boris-on/" target="_blank" lang="ru">GitHub</a>
+                </li>
+            </ul>
         </div>
     </div>
 </footer>
-
-
 </body></html>
