@@ -67,6 +67,10 @@
     margin-bottom: 7.5rem!important;
 }
 
+.mb-4 {
+    margin-bottom: 0rem!important;
+}
+
 .search-block-default-height {
     min-height: 330px;
 }
