@@ -39,34 +39,22 @@
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js" type="text/javascript"></script>
 <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.2/jquery.validate.js" type="text/javascript"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js" type="text/javascript"></script> -->
 <main>
 <section id="main" class="jumbotron mb-0 pb-3 bg-primary">
     <div class="search-block-default-height">
         <div class="text-white container-search">
-            <!-- <div class="align-items-center text-center pl-lg-5"> -->
                 <h1 class="mb-3 mt-3 main_title text-center" id="cleanHeader">Очистить метаданные файлов</h1>
                 <div class="row justify-content-center" id="m-form">
                     <div class="col-12 col-md-10 col-lg-6">
                         <form class="dragForm"
                         enctype="multipart/form-data"
-                        
-                        action="http://localhost:8001/upload"
+                        action="http://metawipe.ru/upload"
                         method="post">
                             <input type="file" name="myFile" id="myFile" multiple="multiple">
                             <p>Загрузите файлы или ператащите их сюда</p>
                             <button type="submit">Отправить</button>
                           </form>
-                        <!-- <form
-                        enctype="multipart/form-data"
-                        action="http://metawipe.ru/upload"
-                        method="post"
-                        >
-                        <input type="file" name="myFile" id="myFile" multiple="multiple"/>
-                        <input type="submit" name="submit" value="Отправить" />
-                      </form> -->
                     </div>
-                <!-- </div> -->
             </div>
         </div>
     </div>
