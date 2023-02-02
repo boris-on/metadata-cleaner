@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:300,300i,400,600,700&amp;display=swap">
 
     <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/custom.css">
 
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <meta name="google-site-verification" content="G9MZwlSkVLAUWbMO0zzT_DQlXQNbbST777BV0px7lAY">    
@@ -42,27 +43,41 @@
 <main>
 <section id="main" class="jumbotron mb-0 pb-3 bg-primary">
     <div class="search-block-default-height">
-        <div class="container text-white h-100 container-search">
-            <div class="align-items-center text-center pl-lg-5">
-                    <h1 class="mb-3 mt-3 main_title">Очистить метаданные файлов</h1>
+        <div class="text-white container-search">
+            <!-- <div class="align-items-center text-center pl-lg-5"> -->
+                <h1 class="mb-3 mt-3 main_title text-center" id="cleanHeader">Очистить метаданные файлов</h1>
                 <div class="row justify-content-center" id="m-form">
                     <div class="col-12 col-md-10 col-lg-6">
-                        <form
+                        <form class="dragForm"
+                        enctype="multipart/form-data"
+                        
+                        action="http://localhost:8001/upload"
+                        method="post">
+                            <input type="file" name="myFile" id="myFile" multiple="multiple">
+                            <p>Загрузите файлы или ператащите их сюда</p>
+                            <button type="submit">Отправить</button>
+                          </form>
+                        <!-- <form
                         enctype="multipart/form-data"
                         action="http://metawipe.ru/upload"
                         method="post"
                         >
                         <input type="file" name="myFile" id="myFile" multiple="multiple"/>
                         <input type="submit" name="submit" value="Отправить" />
-                      </form>
+                      </form> -->
                     </div>
-                </div>
+                <!-- </div> -->
             </div>
         </div>
     </div>
     <a id="dow"></a>
 </section>
 <script>
+    $(document).ready(function(){
+  $('form input').change(function () {
+    $('form p').text(this.files.length + " файл(ов) выбран(ы)");
+  });
+});
     $(function(){
         function sendData($form){
             var form_data = new FormData();
@@ -102,11 +117,12 @@
             
             sendData($(this))
             .done(function(){
+                $('#cleanHeader').css({"opacity": "0"})
                 $('form').html('<div id="message"></div>');
-
+                $('form').css({"border": "0px"})
                 $('#message')
-                    .html('<h2>Файлы отправлены</h2>')
-                    .append('<p>Метаданные сейчас будут удалены</p>')
+                    .html('<br><h2 class="text-center">Файлы отправлены</h2>')
+                    .append('<p class="load">Метаданные сейчас будут удалены</p>')
                     .hide()
                     .fadeIn(1500);
             });
