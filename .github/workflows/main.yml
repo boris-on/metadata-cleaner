@@ -19,10 +19,9 @@ jobs:
             cd metawipe
             
             docker kill metawipe_container
-            docker container prune
-            y
+            docker container prune -f
 
             git pull
             
             docker build -t metawipe . 
-            docker run -dp 80:80 --name metawipe_container metawipe 
+            docker run --restart always -dp 80:80 --name metawipe_container metawipe 
