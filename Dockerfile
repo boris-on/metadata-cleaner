@@ -1,3 +1,5 @@
+ARG GO_VERSION=1.18.3
+
 FROM golang:latest-alpine AS builder
 
 RUN apk add --no-cache ca-certificates git
