@@ -129,7 +129,7 @@ func main() {
 	certManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist("metawipe.ru"),
-		Cache:      autocert.DirCache("certs"),
+		Cache:      autocert.DirCache("cert-cache"),
 	}
 
 	mkDir()
