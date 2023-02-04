@@ -3,7 +3,6 @@ package main
 import (
 	"archive/zip"
 	"bytes"
-	"crypto/tls"
 	"errors"
 	"fmt"
 	"io"
@@ -11,8 +10,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
-
-	"golang.org/x/crypto/acme/autocert"
 )
 
 func deleteMetadata(filename string) error {
@@ -125,13 +122,6 @@ func upload(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
-	certManager := autocert.Manager{
-		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist("metawipe.ru"),
-		Cache:      autocert.DirCache("cert-cache"),
-	}
-
 	mkDir()
 
 	mux := http.NewServeMux()
@@ -139,23 +129,13 @@ func main() {
 	mux.Handle("/", fs)
 	mux.HandleFunc("/upload", upload)
 
-	server := &http.Server{
-		Addr:    ":443",
-		Handler: mux,
-		TLSConfig: &tls.Config{
-			GetCertificate: certManager.GetCertificate,
-		},
-	}
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "80"
 	}
 
 	fmt.Println("starting server at", port)
-	go http.ListenAndServe(":"+port, certManager.HTTPHandler(nil))
-
-	err := server.ListenAndServeTLS("", "")
+	err := http.ListenAndServe(":"+port, mux)
 	if err != nil {
 		fmt.Println(err)
 	}

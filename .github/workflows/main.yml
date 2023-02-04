@@ -24,4 +24,4 @@ jobs:
             git pull
             
             docker build -t metawipe . 
-            docker run --restart always -dp 80:80 -dp 443:443 -v /certs:/certs --name metawipe_container metawipe 
+            docker run --restart always -dp 80:80 --name metawipe_container metawipe 

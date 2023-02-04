@@ -2,8 +2,6 @@ ARG GO_VERSION=1.18.3
 
 FROM golang:${GO_VERSION}-alpine AS builder
 
-RUN apk add --no-cache ca-certificates git
-
 WORKDIR /app
 
 COPY go.mod go.sum ./
@@ -21,11 +19,8 @@ FROM scratch AS final
 
 COPY --from=builder app/cmd/main /main
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY /public ./
 
-EXPOSE 443
 EXPOSE 80
-
-VOLUME ["/cert-cache"]
 
 ENTRYPOINT ["/main"]
