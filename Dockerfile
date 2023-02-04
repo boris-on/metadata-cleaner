@@ -17,10 +17,12 @@ RUN chmod +x cmd/main
 
 FROM scratch AS final
 
-COPY --from=builder app/cmd/main /main
+WORKDIR /app
 
-COPY /public ./
+COPY --from=builder app/cmd/main cmd/main
+
+COPY ./public ./public
 
 EXPOSE 80
 
-ENTRYPOINT ["/main"]
+ENTRYPOINT ["cmd/main"]
