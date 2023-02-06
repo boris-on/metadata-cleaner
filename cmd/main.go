@@ -10,24 +10,18 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+
+	"github.com/barasher/go-exiftool"
 )
 
 func deleteMetadata(filename string) error {
-	// doc, err := document.Open(filename)
-	// if err != nil {
-	// 	log.Fatalf("error opening document: %s", err)
-	// 	return err
-	// }
-	// defer doc.Close()
 
-	// cp := doc.CoreProperties
-	// cp.SetAuthor("")
-	// cp.SetCategory("")
-	// cp.SetContentStatus("")
-	// cp.SetLastModifiedBy("")
-	// cp.SetCreated(time.Now())
-	// cp.SetModified(time.Now())
-	// doc.SaveToFile(filename)
+	e, _ := exiftool.NewExiftool()
+	defer e.Close()
+	originals := e.ExtractMetadata(filename)
+
+	originals[0].ClearAll()
+	e.WriteMetadata(originals)
 	return nil
 }
 
@@ -49,7 +43,6 @@ func serveFile(w http.ResponseWriter, multiFile *multipart.FileHeader, zipWriter
 	}
 	defer file.Close()
 
-	// tempFile, err := ioutil.TempFile("temp-docs", "upload-*.docx")
 	tempFile, err := os.Create("metawipe/" + multiFile.Filename)
 	if err != nil {
 		fmt.Fprintln(w, err)
@@ -63,11 +56,11 @@ func serveFile(w http.ResponseWriter, multiFile *multipart.FileHeader, zipWriter
 		return
 	}
 
-	// err = deleteMetadata(tempFile.Name())
-	// if err != nil {
-	// 	fmt.Fprintln(w, err)
-	// 	return
-	// }
+	err = deleteMetadata(tempFile.Name())
+	if err != nil {
+		fmt.Fprintln(w, err)
+		return
+	}
 
 	fmt.Println("opening file...")
 	f, err := os.Open(tempFile.Name())
@@ -131,7 +124,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "80"
+		port = "8081"
 	}
 
 	fmt.Println("starting server at", port)

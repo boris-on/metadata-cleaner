@@ -15,9 +15,11 @@ RUN cd cmd && CGO_ENABLED=0 go build \
 
 RUN chmod +x cmd/main
 
-FROM scratch AS final
+FROM alpine AS final
 
 WORKDIR /app
+
+RUN apk add --no-cache exiftool
 
 COPY --from=builder app/cmd/main cmd/main
 
