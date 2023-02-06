@@ -109,6 +109,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	zipWriter := zip.NewWriter(tempArchive)
 
 	for _, file := range files {
+		logrus.Trace("Serving file: ", file.Filename, "Remote address: ", r.RemoteAddr)
 		serveFile(w, file, zipWriter)
 	}
 
