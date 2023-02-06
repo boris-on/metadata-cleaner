@@ -10,13 +10,19 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/barasher/go-exiftool"
+	"github.com/sirupsen/logrus"
 )
 
 func deleteMetadata(filename string) error {
 
-	e, _ := exiftool.NewExiftool()
+	e, err := exiftool.NewExiftool()
+	if err != nil {
+		logrus.Error(err)
+	}
 	defer e.Close()
 	originals := e.ExtractMetadata(filename)
 
@@ -30,7 +36,7 @@ func mkDir() {
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(path, os.ModePerm)
 		if err != nil {
-			fmt.Println(err)
+			logrus.Error(err)
 		}
 	}
 }
@@ -39,6 +45,7 @@ func serveFile(w http.ResponseWriter, multiFile *multipart.FileHeader, zipWriter
 	file, err := multiFile.Open()
 	if err != nil {
 		fmt.Fprintln(w, err)
+		logrus.Error(err)
 		return
 	}
 	defer file.Close()
@@ -46,6 +53,7 @@ func serveFile(w http.ResponseWriter, multiFile *multipart.FileHeader, zipWriter
 	tempFile, err := os.Create("metawipe/" + multiFile.Filename)
 	if err != nil {
 		fmt.Fprintln(w, err)
+		logrus.Error(err)
 		return
 	}
 	defer tempFile.Close()
@@ -53,31 +61,34 @@ func serveFile(w http.ResponseWriter, multiFile *multipart.FileHeader, zipWriter
 	_, err = io.Copy(tempFile, file)
 	if err != nil {
 		fmt.Fprintln(w, err)
+		logrus.Error(err)
 		return
 	}
 
 	err = deleteMetadata(tempFile.Name())
 	if err != nil {
 		fmt.Fprintln(w, err)
+		logrus.Error(err)
 		return
 	}
 
-	fmt.Println("opening file...")
 	f, err := os.Open(tempFile.Name())
 	if err != nil {
 		fmt.Fprintln(w, err)
+		logrus.Error(err)
 		return
 	}
 	defer f.Close()
 
-	fmt.Println("writing file to archive...")
 	fileWriter, err := zipWriter.Create(tempFile.Name())
 	if err != nil {
 		fmt.Fprintln(w, err)
+		logrus.Error(err)
 		return
 	}
 	if _, err := io.Copy(fileWriter, f); err != nil {
 		fmt.Fprintln(w, err)
+		logrus.Error(err)
 		return
 	}
 }
@@ -88,10 +99,10 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	formdata := r.MultipartForm
 	files := formdata.File["files[]"]
 
-	fmt.Println("creating zip archive...")
 	tempArchive, err := ioutil.TempFile("metawipe", "zip-*.zip")
 	if err != nil {
 		fmt.Fprintln(w, err)
+		logrus.Error(err)
 		return
 	}
 	defer tempArchive.Close()
@@ -101,20 +112,21 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		serveFile(w, file, zipWriter)
 	}
 
-	fmt.Println("closing zip archive...")
 	zipWriter.Close()
 
 	fileBytes, err := ioutil.ReadFile(tempArchive.Name())
 	if err != nil {
 		fmt.Fprintln(w, err)
+		logrus.Error(err)
 		return
 	}
-	fmt.Println(tempArchive.Name())
 	io.Copy(w, bytes.NewReader(fileBytes))
 
 }
 
 func main() {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
+
 	mkDir()
 
 	mux := http.NewServeMux()
@@ -127,9 +139,13 @@ func main() {
 		port = "80"
 	}
 
-	fmt.Println("starting server at", port)
-	err := http.ListenAndServe(":"+port, mux)
-	if err != nil {
-		fmt.Println(err)
-	}
+	logrus.Info("Starting server at port: ", port)
+	go http.ListenAndServe(":"+port, mux)
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	logrus.Printf("Server shutting down")
+
 }
