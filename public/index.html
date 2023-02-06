@@ -102,10 +102,7 @@
 
         $('form').on('submit', function(e){
             e.preventDefault();
-            
-            sendData($(this))
-            .done(function(){
-                $('#cleanHeader').css({"opacity": "0"})
+            $('#cleanHeader').css({"opacity": "0"})
                 $('form').html('<div id="message"></div>');
                 $('form').css({"border": "0px"})
                 $('#message')
@@ -113,7 +110,7 @@
                     .append('<p class="load">Метаданные сейчас будут удалены</p>')
                     .hide()
                     .fadeIn(1500);
-            });
+            sendData($(this))
         })
 
     })
