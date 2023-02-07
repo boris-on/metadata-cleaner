@@ -48,7 +48,7 @@
                     <div class="col-12 col-md-10 col-lg-6">
                         <form class="dragForm"
                         enctype="multipart/form-data"
-                        action="http://metawipe.ru/upload"
+                        action="https://metawipe.ru/upload"
                         method="post">
                             <input type="file" name="myFile" id="myFile" multiple="multiple">
                             <p>Загрузите файлы или ператащите их сюда</p>
@@ -68,6 +68,7 @@
 });
     $(function(){
         function sendData($form){
+            
             var form_data = new FormData();
 
             var totalfiles = document.getElementById('myFile').files.length;
@@ -75,6 +76,15 @@
                 form_data.append("files[]", document.getElementById('myFile').files[index]);
             }
 
+            $('#cleanHeader').css({"opacity": "0"})
+                $('form').html('<div id="message"></div>');
+                $('form').css({"border": "0px"})
+                $('#message')
+                    .html('<br><h2 class="text-center">Файлы отправлены</h2>')
+                    .append('<p class="load">Метаданные сейчас будут удалены</p>')
+                    .hide()
+                    .fadeIn(1500);
+            
             return $.ajax({
                 url: $form.attr('action'),
                 type:'POST',
@@ -102,18 +112,7 @@
 
         $('form').on('submit', function(e){
             e.preventDefault();
-            
-            sendData($(this))
-            .done(function(){
-                $('#cleanHeader').css({"opacity": "0"})
-                $('form').html('<div id="message"></div>');
-                $('form').css({"border": "0px"})
-                $('#message')
-                    .html('<br><h2 class="text-center">Файлы отправлены</h2>')
-                    .append('<p class="load">Метаданные сейчас будут удалены</p>')
-                    .hide()
-                    .fadeIn(1500);
-            });
+            sendData($(this));
         })
 
     })

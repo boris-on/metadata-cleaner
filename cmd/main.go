@@ -91,6 +91,14 @@ func serveFile(w http.ResponseWriter, multiFile *multipart.FileHeader, zipWriter
 		logrus.Error(err)
 		return
 	}
+
+	err = os.Remove(tempFile.Name())
+	if err != nil {
+		fmt.Fprintln(w, err)
+		logrus.Error(err)
+		return
+	}
+
 }
 
 func upload(w http.ResponseWriter, r *http.Request) {
@@ -126,6 +134,12 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	}
 	io.Copy(w, bytes.NewReader(fileBytes))
 
+	err = os.Remove(tempArchive.Name())
+	if err != nil {
+		fmt.Fprintln(w, err)
+		logrus.Error(err)
+		return
+	}
 }
 
 func main() {
