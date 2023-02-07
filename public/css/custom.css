@@ -74,3 +74,8 @@
 .search-block-default-height {
     min-height: 330px;
 }
+
+.bg-primary {
+    background-color: #452c63!important;
+    fill: #452c63!important
+}
