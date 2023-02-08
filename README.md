@@ -14,4 +14,4 @@
 ![](https://img.shields.io/badge/Code-jQuery-informational=?style=flat&logo=jQuery&logoColor=white&color=black)
 ![](https://img.shields.io/badge/Tools-Docker-informational=?style=flat&logo=Docker&logoColor=white&color=black)
 
-<img alt="metawipe screenshot" src="public/screenshot.png" href="https://metawipe.ru"> </img>
+<a href="https://metawipe.ru"><img alt="metawipe screenshot" src="public/screenshot.png"></img></a>
